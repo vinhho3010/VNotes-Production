@@ -1,5 +1,5 @@
 const config = {
-    server: "http://localhost:3000/api",
+    server: "https://vnotes-api-deploy.vercel.app/api",
 };
 
 export default config;
