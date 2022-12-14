@@ -79,7 +79,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations({ closeEditModal: "closeEditModal" }),
+    ...mapMutations({ closeEditModal: "closeEditModal",
+                      closeLoading: "closeLoading",
+                      displayLoading: "displayLoading" }),
     //change state of pin attribute
     pinNote() {
       this.editedNote.isPin = !this.editedNote.isPin;
@@ -111,10 +113,10 @@ export default {
       }).then((result) => {
         if (this.currentRoute == "/trash" && result.isConfirmed) {
           //if user want to delete note, delete it by call deleteNoteHandle function
-          this.deleteNoteHandle();
+          this.deleteNoteHandle();       
         } else if (this.currentRoute == "/home" && result.isConfirmed) {
           //move note to trash
-          this.moveToTrash()
+          this.moveToTrash();         
         }
       });
     },
@@ -123,16 +125,19 @@ export default {
       const payload = {
         note: this.editedNote,
       };
+      this.displayLoading();
       //call action from store to update note
       await this.deleteNote(payload);
       //reload edited notelist
       await this.getAllNotes(this.getAccountInfor._id);
+      this.closeLoading();
       this.closeEditModal()
       //show alert notification
       Swal.fire("", "Ghi chú được xoá thành công", "success");
     },
     async moveToTrash() {
       //change state of isDeleted attribute to move note into trash
+      this.displayLoading();
       this.editedNote.isDeleted = true;
       const payload = {
         userId: this.getAccountInfor._id,
@@ -142,10 +147,12 @@ export default {
       await this.updateNote(payload);
       //reload edited notelist
       await this.getAllNotes(this.getAccountInfor._id);
+      this.closeLoading();
       this.closeEditModal()
       Swal.fire("", "Ghi chú được chuyển vào thùng rác", "success");
     },
     async restoreNote() {
+      this.displayLoading();
       this.editedNote.isDeleted = false;
       const payload = {
         userId: this.getAccountInfor._id,
@@ -155,6 +162,7 @@ export default {
       await this.updateNote(payload);
       //reload edited notelist
       await this.getAllNotes(this.getAccountInfor._id);
+      this.closeLoading();
       this.closeEditModal()
       Swal.fire("", "Ghi chú được khôi phục thành công", "success");
     },
@@ -165,11 +173,13 @@ export default {
         userId: this.getAccountInfor._id,
         note: this.editedNote,
       };
+      this.displayLoading();
       //call action from store to update note
       await this.updateNote(payload);
       //reload edited notelist
       await this.getAllNotes(this.getAccountInfor._id);
-      this.closeEditModal()
+      this.closeLoading();
+      this.closeEditModal();
       Swal.fire("", "Ghi chú được cập nhật thành công", "success");
     },
     ...mapActions({

@@ -1,16 +1,17 @@
+import { compileTemplate } from "vue/compiler-sfc";
 
 const ModalStateModule = {
   state: {
     isShowEditModal: false,
-    isShowColorPicker: false,
+    isShowLoading: false,
     noteEdit: {},
   },
   getters: {
     getEditModalState(state) {
       return state.isShowEditModal;
     },
-    getColorPickerState(state){
-      return state.isShowColorPicker;
+    getLoadingState(state){
+      return state.isShowLoading;
     }
   },
   mutations: {
@@ -20,14 +21,21 @@ const ModalStateModule = {
     displayEditModal(state) {
       state.isShowEditModal = true;
     },
-    closeColorPicker(state){
-      state.isShowColorPicker = false;
+    closeLoading(state){
+      state.isShowLoading = false;
     },
-    displayColorPicker(state){
-      state.isShowColorPicker = true;
+    displayLoading(state){
+      state.isShowLoading = true;
     }
   },
-  action: {},
+  action: {
+    closeLoading(){
+      commit("closeLoading");
+    },
+    displayLoading(){
+      commit("displayLoading");
+    }
+  },
 };
 
 export default ModalStateModule;

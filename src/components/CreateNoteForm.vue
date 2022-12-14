@@ -50,7 +50,7 @@
 
 <script>
 import ColorPicker from '@/components/ColorPicker.vue';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import Swal from 'sweetalert2';
 
 export default {
@@ -78,6 +78,10 @@ export default {
     methods: {
         ...mapActions({createNewNote: "createNewNote",
                         getAllNotes: "getAllNotes"}),
+        ...mapMutations({
+                        closeLoading: "closeLoading",
+                        displayLoading: "displayLoading"
+        }),
         visibleNoteTitle() {
             this.isVisible = "block";
         },
@@ -118,15 +122,16 @@ export default {
                     userId: this.getAccountInfor._id,
                     note: this.note
                 }
+                this.displayLoading();
                 await this.createNewNote(payload);
-
+                this.refreshInput();
+                this.closeLoading();
                 Toast.fire({
                     icon: 'success',
                     title: 'Thêm ghi chú thành công'
                   });
                   
                 await this.getAllNotes(this.getAccountInfor._id);
-                this.refreshInput();
             }
         }
 

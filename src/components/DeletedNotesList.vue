@@ -56,11 +56,17 @@ export default {
         }),
     },
     methods: {
-        ...mapActions({ getAllNotes: "getAllNotes",
-                        deleteNote: "deleteNote" }),
+        ...mapActions({
+            getAllNotes: "getAllNotes",
+            deleteNote: "deleteNote"
+        }),
 
-        ...mapMutations["SET_NOTE_SEARCH_LIST"],
-        
+        ...mapMutations({
+            SET_NOTE_SEARCH_LIST: "SET_NOTE_SEARCH_LIST",
+            closeLoading: "closeLoading",
+            displayLoading: "displayLoading"
+        }),
+
         cleanTrash() {
             //show confirm modal to delete note
             Swal.fire({
@@ -75,22 +81,34 @@ export default {
                 if (result.isConfirmed) {
                     this.deleteAllNote();
                 }
-            });  
-        },
-        async deleteAllNote(){
-            //delete all deleted notes
-            await this.getDeletedNoteList.forEach(deletedNote => {
-                let payload = {
-                    note: deletedNote,
-                };
-                this.deleteNote(payload);
             });
-            //show alert notification
-            Swal.fire("", "Thùng rác đã được dọn sạch", "success");
+        },
+        async deleteAllNote() {
+            //delete all deleted notes
+            this.displayLoading();
+            await this.getDeletedNoteList.forEach(deletedNote => {
+            let payload = {
+                note: deletedNote,
+            };
+            this.deleteEachNote(payload);
+        });
+
             //reload edited notelist
             await this.getAllNotes(this.getAccountInfor._id);
+            this.closeLoading();
+            //show alert notification
+            await Swal.fire("", "Thùng rác đã được dọn sạch", "success");
+        },
+
+        async deleteEachNote(payload){
+            await this.deleteNote(payload);
         }
     },
+    watch: {
+    getDeletedNoteList(){
+        this.getAllNotes(this.getAccountInfor._id);
+    }
+  },
     async mounted() {
         await this.getAllNotes(this.getAccountInfor._id);
         this.$store.commit("SET_NOTE_SEARCH_LIST", [])
