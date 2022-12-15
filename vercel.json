@@ -1,9 +1,3 @@
 {
-    "rewrites": [
-      { "source": "/home", "destination": "/home" },
-      { "source": "/trash", "destination": "/trash" },
-      { "source": "/login", "destination": "login" },
-      { "source": "/", "destination": "/login" },
-      { "source": "/signup", "destination": "/signup" }
-    ]
+    "rewrites": [ { "source": "/**", "destination": "/index.html" } ]
   }
